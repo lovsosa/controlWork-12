@@ -29,6 +29,24 @@ usersRouter.post('/', async (req, res) => {
   }
 });
 
+usersRouter.get('/:id', async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(404).send({ error: 'Пользователь не найден' });
+    }
+
+    const user = await User.findById(req.params.id, 'displayName');
+
+    if (!user) {
+      return res.status(404).send({ error: 'Пользователь не найден' });
+    }
+
+    res.send(user);
+  } catch {
+    res.sendStatus(500);
+  }
+});
+
 usersRouter.post('/sessions', async (req, res) => {
   const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
   const user = await User.findOne({ email });
