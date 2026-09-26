@@ -45,3 +45,9 @@ export interface RecipeFull extends Recipe {
   description: string;
   createdAt: string;
 }
+
+export interface RecipeMutation {
+  title: string;
+  description: string;
+  image: File | null;
+}
