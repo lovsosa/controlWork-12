@@ -28,3 +28,20 @@ export interface ValidationError {
     };
   };
 }
+
+export interface Author {
+  _id: string;
+  displayName: string;
+}
+
+export interface Recipe {
+  _id: string;
+  title: string;
+  image: string;
+  author: Author;
+}
+
+export interface RecipeFull extends Recipe {
+  description: string;
+  createdAt: string;
+}

@@ -11,6 +11,7 @@ import {
 } from 'redux-persist';
 import storageModule from 'redux-persist/lib/storage';
 import { usersReducer } from '../features/users/usersSlice';
+import { recipesReducer } from '../features/recipes/recipesSlice';
 
 const storage =
   (storageModule as unknown as { default?: typeof storageModule }).default ??
@@ -24,6 +25,7 @@ const usersPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(usersPersistConfig, usersReducer),
+  recipes: recipesReducer,
 });
 
 export const store = configureStore({
