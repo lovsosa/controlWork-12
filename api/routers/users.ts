@@ -1,8 +1,12 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import { randomUUID } from 'node:crypto';
+import { OAuth2Client } from 'google-auth-library';
+import config from '../config';
 import User from '../models/User';
 
 const usersRouter = express.Router();
+const googleClient = new OAuth2Client(config.google.clientId);
 
 usersRouter.post('/', async (req, res) => {
   try {
@@ -37,6 +41,50 @@ usersRouter.post('/sessions', async (req, res) => {
   await user.save();
 
   res.send(user);
+});
+
+usersRouter.post('/google', async (req, res) => {
+  if (!config.google.clientId) {
+    return res.status(500).send({ error: 'Не задан GOOGLE_CLIENT_ID в api/.env' });
+  }
+
+  if (!req.body.credential) {
+    return res.status(400).send({ error: 'Не передан Google credential' });
+  }
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: req.body.credential,
+      audience: config.google.clientId,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) {
+      return res.status(400).send({ error: 'Не удалось войти через Google' });
+    }
+
+    const email = payload.email.toLowerCase();
+    let user = await User.findOne({
+      $or: [{ googleId: payload.sub }, { email }],
+    });
+
+    if (!user) {
+      user = new User({
+        email,
+        password: randomUUID(),
+        displayName: payload.name || email,
+      });
+    }
+
+    user.googleId = payload.sub;
+    user.generateToken();
+    await user.save();
+
+    res.send(user);
+  } catch {
+    res.status(400).send({ error: 'Не удалось войти через Google' });
+  }
 });
 
 usersRouter.delete('/sessions', async (req, res) => {

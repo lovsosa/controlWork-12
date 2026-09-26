@@ -1,14 +1,17 @@
 import path from 'path';
+import dotenv from 'dotenv';
 
 const rootPath = __dirname;
+
+dotenv.config({ path: path.join(rootPath, '.env'), quiet: true });
 
 const config = {
   rootPath,
   publicPath: path.join(rootPath, 'public'),
   mongoDbUrl: 'mongodb://127.0.0.1:27017/recipes',
   google: {
-    clientId:
-      '843663437006-gcsqfbboudu58kd8iua4o18fok7bgejf.apps.googleusercontent.com',
+    clientId: process.env['GOOGLE_CLIENT_ID'],
+    clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
   },
 };
 
