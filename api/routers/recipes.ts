@@ -6,6 +6,7 @@ import config from '../config';
 import auth, { RequestWithUser } from '../middlewares/auth';
 import { imagesUpload } from '../multer';
 import Recipe from '../models/Recipe';
+import Comment from '../models/Comment';
 
 const recipesRouter = express.Router();
 
@@ -95,6 +96,7 @@ recipesRouter.delete('/:id', auth, async (req, res) => {
     }
 
     await recipe.deleteOne();
+    await Comment.deleteMany({ recipe: recipe._id });
     await removeImage(recipe.image);
 
     res.send({ message: 'Рецепт удалён' });

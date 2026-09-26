@@ -14,3 +14,9 @@ export interface RecipeFields {
   image: string;
   author: Types.ObjectId;
 }
+
+export interface CommentFields {
+  text: string;
+  author: Types.ObjectId;
+  recipe: Types.ObjectId;
+}

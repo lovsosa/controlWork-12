@@ -51,3 +51,16 @@ export interface RecipeMutation {
   description: string;
   image: File | null;
 }
+
+export interface Comment {
+  _id: string;
+  text: string;
+  author: Author;
+  recipe: string;
+  createdAt: string;
+}
+
+export interface CommentMutation {
+  recipe: string;
+  text: string;
+}

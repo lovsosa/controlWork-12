@@ -7,6 +7,7 @@ import { BASE_URL } from '../../constants';
 import NotFound from '../../components/NotFound/NotFound';
 import { selectOneRecipe, selectOneRecipeLoading } from './recipesSlice';
 import { fetchOneRecipe } from './recipesThunks';
+import Comments from '../comments/Comments';
 
 const RecipeDetails = () => {
   const { id } = useParams() as { id: string };
@@ -47,6 +48,7 @@ const RecipeDetails = () => {
         style={{ maxHeight: 460, objectFit: 'cover' }}
       />
       <div className="recipe-text">{recipe.description}</div>
+      <Comments recipeId={recipe._id} recipeOwnerId={recipe.author._id} />
     </Container>
   );
 };
